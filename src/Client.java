@@ -13,19 +13,13 @@ public class Client {
         Socket connection = new Socket("localhost", 6789);
         System.out.println("[+] Successfull connected to port " + connection.getLocalPort() + "\n");
 
-        //crete "file descriptor" for i/o
-        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        DataOutputStream outFromClient = new DataOutputStream(connection.getOutputStream());
+        WorkerClient receiver = new WorkerClient(connection, "receiver");
+        WorkerClient sender = new WorkerClient(connection, "sender");
 
-        while(messageToSent != "exit"){
-            messageToSent = scanner.nextLine();
-            outFromClient.writeBytes(messageToSent+"\n");
+        receiver.start();
+        sender.start();
+        System.out.println("waiting messages ...");
 
-            //read data from server
-            messageToRead = inFromServer.readLine();
-            System.out.println(messageToRead);
-        }
 
-        connection.close();
     }
 }

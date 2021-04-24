@@ -9,11 +9,13 @@ public class Worker extends Thread{
     private String message = null;
     private String messageFromClient = null;
     private Integer index = 0;
+    private String type = null;
     Queue chat;
 
-    public Worker(Socket newSocket, Queue que){
+    public Worker(Socket newSocket, Queue que, String t){
         connection = newSocket;
         chat = que;
+        type = t;
         try{
             inFromClient = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             outToClient = new DataOutputStream(connection.getOutputStream());
@@ -24,24 +26,31 @@ public class Worker extends Thread{
     }
 
     public void run() {
-        while(messageFromClient != "exit"){
-            try {
-                messageFromClient = inFromClient.readLine();
-                chat.put(messageFromClient);
-//                outToClient.writeBytes(messageFromClient.toUpperCase()+"\n");
-            }
-            catch (IOException e){
-                e.printStackTrace();
-            }
-
-            message = chat.get(index);
-            index++;
-            try {
-                outToClient.writeBytes(message+"\n");
-            } catch (IOException e) {
-                e.printStackTrace();
+        //if user send "exit", end thread
+        if(type == "receiver"){
+            while(true){
+                try {
+                    messageFromClient = inFromClient.readLine();
+                    chat.put(messageFromClient);
+                }
+                catch (IOException e){
+//                    e.printStackTrace();
+                }
+                System.out.println(messageFromClient);
             }
         }
+        else if(type == "sender") {
+            while(true){
+                try {
+                    message = chat.get(index);
+                    index++;
+                    outToClient.writeBytes(message + "\n");
+                } catch (IOException e) {
+//                    e.printStackTrace();
+                }
+            }
+        }
+
 
     }
 }

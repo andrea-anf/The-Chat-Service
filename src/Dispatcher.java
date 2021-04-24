@@ -14,8 +14,11 @@ public class Dispatcher {
             System.out.println("[+] Connected with: " + connection.getInetAddress() + ":" + connection.getPort());
 
             //passing the connection to a new worker
-            Worker sonThread = new Worker(connection, chat);
-            sonThread.start();
+            Worker receiverThread = new Worker(connection, chat, "receiver");
+            Worker senderThread = new Worker(connection, chat, "sender");
+            receiverThread.start();
+            senderThread.start();
+
         }
     }
 }
