@@ -6,6 +6,7 @@ public class Dispatcher {
     public static void main(String[] args) throws Exception {
         Integer port = 6789;
         ServerSocket welcomeSocket = new ServerSocket(port);
+        Queue chat = new Queue();
 
         while(true){
             System.out.println("\n[+] Waiting for connection");
@@ -13,7 +14,7 @@ public class Dispatcher {
             System.out.println("[+] Connected with: " + connection.getInetAddress() + ":" + connection.getPort());
 
             //passing the connection to a new worker
-            Worker sonThread = new Worker(connection);
+            Worker sonThread = new Worker(connection, chat);
             sonThread.start();
         }
     }

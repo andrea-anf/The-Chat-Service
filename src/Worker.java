@@ -6,7 +6,7 @@ public class Worker extends Thread{
     private DataOutputStream outToClient;
 
 
-    public Worker(Socket newSocket){
+    public Worker(Socket newSocket, Queue chat){
         connection = newSocket;
         try{
             inFromClient = new BufferedReader(new InputStreamReader(connection.getInputStream()));
