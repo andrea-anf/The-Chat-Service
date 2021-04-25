@@ -1,3 +1,5 @@
+package Server;
+
 import java.util.ArrayList;
 
 public class Queue {
@@ -5,10 +7,10 @@ public class Queue {
 
     public synchronized void put(String message){
         buffer.add(message);
-        notifyAll();
+        notify();
     }
 
-    public synchronized String get(int index){
+    public synchronized String take(){
         String message = null;
         while(buffer.size() == 0){
             try {
@@ -19,8 +21,8 @@ public class Queue {
             }
         }
         if(buffer.size() > 0){
-            message = buffer.get(index);
-//            buffer.remove(0);
+            message = buffer.get(0);
+            buffer.remove(0);
         }
         return message;
     }
