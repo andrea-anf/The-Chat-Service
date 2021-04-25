@@ -22,9 +22,9 @@ public class Writer extends Thread{
     public void run() {
         while(true){
             message = chat.take();
+            //System.out.println("Writer: sending '"+message+"'");
             for(DataOutputStream out : clients){
                 try {
-                    System.out.println("Writer: sending '"+message+"'");
                     out.writeBytes(message+"\n");
                 } catch (IOException e) {
                     e.printStackTrace();

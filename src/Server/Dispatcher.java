@@ -22,7 +22,7 @@ public class Dispatcher {
             DataOutputStream outToClient = new DataOutputStream(connection.getOutputStream());
             clients.add(outToClient);
 
-            Worker sonThread = new Worker(connection, chat);
+            Worker sonThread = new Worker(connection, chat, clients, outToClient);
             sonThread.start();
         }
     }

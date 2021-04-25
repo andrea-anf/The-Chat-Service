@@ -1,19 +1,24 @@
 package Server;
 
+import javax.xml.crypto.Data;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
 
 public class Worker extends Thread{
-    private Socket connection = null;
+    private Socket connection;
     private BufferedReader inFromClient;
     private String messageFromClient = null;
     private String messageToClients = null;
+    private ArrayList<DataOutputStream> clients= new ArrayList<>();
+    private DataOutputStream outClient;
     Queue chat;
 
-    public Worker(Socket newSocket, Queue queue){
+    public Worker(Socket newSocket, Queue queue, ArrayList c, DataOutputStream o){
         this.connection = newSocket;
         this.chat = queue;
+        this.clients = c;
+        this.outClient = o;
         try{
             this.inFromClient = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         }
@@ -24,14 +29,17 @@ public class Worker extends Thread{
 
     public void run() {
 
-        //TODO: make it call a listener and writer
-
         while (!this.connection.isClosed()){
             try{
                 messageFromClient = inFromClient.readLine();
                 if(messageFromClient != null){
+                    if(messageFromClient.compareToIgnoreCase("exit") == 0){
+                        this.clients.remove(clients.indexOf(outClient));
+                        this.connection.close();
+                        messageFromClient = "Client "+ this.getId() +" left the chat";
+                    }
                     chat.put(messageFromClient);
-                    System.out.println("Received: " + messageFromClient);
+                    //System.out.println("Receiver: " + messageFromClient);
                 }
 
 

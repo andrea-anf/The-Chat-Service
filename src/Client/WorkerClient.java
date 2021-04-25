@@ -36,6 +36,10 @@ public class WorkerClient extends Thread {
                 try {
                     messageFromServer = inFromServer.readLine();
                     if(messageFromServer != null){
+                        if(messageFromServer == "exit"){
+                            connection.close();
+                            System.out.println(this.getId() + " connessione: "+ this.connection.isClosed() );
+                        }
                         System.out.println("Server: " + messageFromServer);
                     }
                 } catch (IOException e) {
@@ -48,7 +52,9 @@ public class WorkerClient extends Thread {
             while(true){
                 try {
                     message = scanner.nextLine();
-                    outToServer.writeBytes(message + "\n");
+                    if(message != null){
+                        outToServer.writeBytes(message + "\n");
+                    }
                 } catch (IOException e) {
 //                        e.printStackTrace();
                 }
